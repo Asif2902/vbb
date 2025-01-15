@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Token Market Cap Viewer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Virtual BuyBack Token Market Cap Check</h1>
+        <button id="fetchDuneData">Fetch Dune Data</button>
+        <table id="tokenTable">
+            <thead>
+                <tr>
+                    <th>Contract Address</th>
+                    <th>Buy Back Amount</th>
+                    <th>Market Cap</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <script>
+        // Force the viewport to be wide for desktop mode
+        document.addEventListener('DOMContentLoaded', function () {
+            const meta = document.querySelector('meta[name="viewport"]');
+            if (meta) {
+                meta.setAttribute('content', 'width=1024');
+            } else {
+                const newMeta = document.createElement('meta');
+                newMeta.setAttribute('name', 'viewport');
+                newMeta.setAttribute('content', 'width=1024');
+                document.head.appendChild(newMeta);
+            }
+
+            // Provide a warning for users to switch to desktop mode if needed
+            if (window.innerWidth < 1024) {
+                alert('For the best experience, please switch to desktop mode or rotate your device.');
+            }
+        });
+    </script>
+    <script src="app.js"></script>
+</body>
+</html>
