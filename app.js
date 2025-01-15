@@ -29,7 +29,7 @@ async function fetchDuneData() {
             if (token.contract_address && !isNaN(token.vir_bb_amt)) {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${token.contract_address}</td>
+<td><a href="https://basescan.org/address/${token.contract_address}" target="_blank">${token.contract_address}</a></td>
                     <td>${formatNumber(token.vir_bb_amt)}</td>
                     <td id="marketCap-${token.contract_address}">-</td>
                     <td><button onclick="startFetchingAllMarketCaps()">Fetch Market Cap</button></td>
