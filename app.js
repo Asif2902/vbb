@@ -64,18 +64,34 @@ async function fetchMarketCap(contractAddress) {
     try {
         const dexUrl = `https://api.dexscreener.io/latest/dex/tokens/${contractAddress}`;
         const response = await fetch(dexUrl);
-        const { pairs } = await response.json();
+        const data = await response.json();
 
-        const marketCap = pairs?.[0]?.fdv || 0;
-        const marketCapLink = `
-            <h3>${formatNumber(marketCap)}</h3>
-            <a href="https://www.dexscreener.com/base/${contractAddress}" target="_blank">View on Dexscreener</a>
-        `;
-        document.getElementById(`marketCap-${contractAddress}`).innerHTML = marketCapLink;
+        const pairs = data?.pairs || [];
+        let marketCap = 0;
+
+        for (const pair of pairs) {
+            if (pair?.fdv) {
+                marketCap = pair.fdv; // Use the first available FDV
+                break;
+            }
+        }
+
+        if (marketCap > 0) {
+            document.getElementById(`marketCap-${contractAddress}`).innerHTML = `
+                <h3>${formatNumber(marketCap)}</h3>
+                <a href="https://www.dexscreener.com/base/${contractAddress}" target="_blank">View on Dexscreener</a>
+            `;
+        } else {
+            document.getElementById(`marketCap-${contractAddress}`).innerHTML = `
+                <h3>No Data</h3>
+                <a href="https://www.dexscreener.com/base/${contractAddress}" target="_blank">View on Dexscreener</a>
+            `;
+        }
     } catch (error) {
         console.error(`Error fetching market cap for ${contractAddress}:`, error);
     }
 }
+
 
 function startFetchingAllMarketCaps() {
     const tokens = window.tokenList || [];
@@ -84,18 +100,20 @@ function startFetchingAllMarketCaps() {
         return;
     }
 
-    let index = 0;
-    const fetchInterval = setInterval(() => {
-        if (index >= tokens.length) {
-            clearInterval(fetchInterval); // Stop the interval once all tokens are processed
-            console.log('All market caps fetched.');
-            return;
-        }
+    let batchSize = 5; // Fetch 5 tokens at a time
+    let batchIndex = 0;
 
-        const token = tokens[index];
-        if (token.contract_address) {
-            fetchMarketCap(token.contract_address);
+    function fetchNextBatch() {
+        const batch = tokens.slice(batchIndex, batchIndex + batchSize);
+        batch.forEach(token => {
+            if (token.contract_address) fetchMarketCap(token.contract_address);
+        });
+
+        batchIndex += batchSize;
+        if (batchIndex < tokens.length) {
+            setTimeout(fetchNextBatch, 1000); // Delay next batch by 1 second
         }
-        index++;
-    }, 200); // 200ms interval = 5 tokens per second
+    }
+
+    fetchNextBatch();
 }
