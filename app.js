@@ -77,5 +77,5 @@ function startFetchingAllMarketCaps() {
             fetchMarketCap(token.contract_address);
         }
         index++;
-    }, 100); // 100ms interval = 10 tokens per second
+    }, 200); // 200ms interval = 5 tokens per second
 }
