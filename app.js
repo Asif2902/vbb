@@ -51,12 +51,12 @@ async function fetchMarketCap(contractAddress) {
         const { pairs } = await response.json();
 
         const marketCap = pairs?.[0]?.fdv || 0;
-        document.getElementById(`marketCap-${contractAddress}`).textContent = formatNumber(marketCap);
+        const marketCapLink = `<a href="https://www.dexscreener.com/base/${contractAddress}" target="_blank">${formatNumber(marketCap)}</a>`;
+        document.getElementById(`marketCap-${contractAddress}`).innerHTML = marketCapLink;
     } catch (error) {
         console.error(`Error fetching market cap for ${contractAddress}:`, error);
     }
 }
-
 function startFetchingAllMarketCaps() {
     const tokens = window.tokenList || [];
     if (!tokens.length) {
