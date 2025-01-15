@@ -21,6 +21,12 @@ h1 {
     font-size: 24px;
     margin-bottom: 20px;
 }
+h2 {
+    text-align: center;
+    color: #ffff;
+    font-size: 5px;
+    margin-bottom: 20px;
+}
 
 button {
     background-color: #2ecc71; /* Green button */
